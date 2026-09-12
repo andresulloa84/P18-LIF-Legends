@@ -1,9 +1,8 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-import { ThumbsUp, Star, Users, Play, Edit3, ShieldCheck } from 'lucide-react';
+import { Play, Edit3, ThumbsDown, Star, Facebook, Pencil } from 'lucide-react';
 import { Player } from '@/lib/initialData';
 
 interface HeroSectionProps {
@@ -13,132 +12,135 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ activePlayer, isCoach, onOpenPlayModal }: HeroSectionProps) {
-  const playerName = activePlayer ? activePlayer.name : 'Legendar';
+  const playerName = activePlayer ? activePlayer.name : 'Maxy';
   const playerAvatar = activePlayer
     ? activePlayer.avatarUrl
-    : 'https://api.dicebear.com/7.x/bottts/svg?seed=legend';
+    : 'https://api.dicebear.com/7.x/bottts/svg?seed=maxy';
 
   return (
-    <section className="w-full bg-[#191b1d] pt-4 pb-8">
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+    <section className="w-full bg-[#191b1d] pt-4 pb-6">
+      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
-        {/* Left Column: Title, Player Greeting, Reaction Pills */}
-        <div className="lg:col-span-6 flex flex-col justify-center space-y-6">
+        {/* Left Column: Exact Screenshot Typography & Social XP Row */}
+        <div className="lg:col-span-7 flex flex-col justify-between space-y-4">
           
-          {/* Subtitle / Level Badge */}
-          <div className="inline-flex items-center gap-2 bg-[#232527] px-4 py-1.5 rounded-full border border-white/10 w-fit">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#00b06f] animate-ping" />
-            <span className="text-xs font-extrabold tracking-widest text-[#00b06f] uppercase">
-              {activePlayer ? activePlayer.levelTitle : 'Säsong 2026 • Aktiv'}
-            </span>
-          </div>
-
-          {/* Oversized Bold Roblox Game Title */}
+          {/* Titles & Welcome Back */}
           <div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white uppercase drop-shadow-lg leading-tight">
-              LYCKSELE <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00b06f] via-[#00e676] to-[#f5c147]">
-                FOTBOLL LEGENDS
-              </span>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white uppercase leading-none drop-shadow-md">
+              LYCKSELE FOTBOLL LEGENDS
             </h1>
             
-            {/* Player Greeting */}
-            <p className="mt-3 text-lg font-bold text-gray-300 flex items-center gap-2">
-              Välkommen tillbaka, <span className="text-[#00b06f] underline decoration-[#00b06f]/40 underline-offset-4">{playerName}</span>! 👋
+            <h2 className="text-2xl sm:text-3xl font-black text-white mt-1 tracking-tight">
+              Futtey P18
+            </h2>
+
+            <p className="text-sm sm:text-base font-bold text-gray-300 mt-2">
+              Welcome back, <span className="text-white font-extrabold">{playerName}!</span>
             </p>
           </div>
 
-          {/* Roblox Social / Reaction Pill Buttons */}
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-1.5 bg-[#232527] px-3.5 py-1.5 rounded-full border border-white/10 text-xs font-bold text-gray-300">
-              <ThumbsUp className="w-3.5 h-3.5 text-[#00b06f]" />
-              <span>98% Gillar</span>
+          {/* Social Row & Embedded XP Pill (Matching Screenshot Layout) */}
+          <div className="relative pt-2">
+            
+            {/* Cartoon Stars Decorative Elements (from screenshot) */}
+            <div className="absolute -top-6 right-8 pointer-events-none hidden sm:block">
+              <span className="text-3xl animate-bounce">⭐</span>
+              <span className="text-xl ml-1">✨</span>
             </div>
 
-            <div className="flex items-center gap-1.5 bg-[#232527] px-3.5 py-1.5 rounded-full border border-white/10 text-xs font-bold text-gray-300">
-              <Star className="w-3.5 h-3.5 text-[#f5c147] fill-[#f5c147]" />
-              <span>1.2k Favoriter</span>
-            </div>
-
-            <div className="flex items-center gap-1.5 bg-[#232527] px-3.5 py-1.5 rounded-full border border-white/10 text-xs font-bold text-gray-300">
-              <Users className="w-3.5 h-3.5 text-blue-400" />
-              <span>34 Spelare i Truppen</span>
-            </div>
-          </div>
-
-          {/* Quick Active Player Card */}
-          {activePlayer && (
-            <div className="roblox-card p-4 flex items-center gap-4 bg-gradient-to-r from-[#232527] to-[#191b1d]">
-              <div className="w-14 h-14 rounded-xl bg-[#2b2d31] p-1 border border-white/10 flex-shrink-0">
-                <img src={playerAvatar} alt={playerName} className="w-full h-full object-contain" />
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              
+              {/* Circular Football Avatar Badge with Edit Pencil (Screenshot) */}
+              <div className="relative w-12 h-12 rounded-full border-2 border-[#00b06f] bg-[#232527] p-1 flex-shrink-0 flex items-center justify-center shadow-lg">
+                <img src={playerAvatar} alt="Football avatar" className="w-full h-full object-contain rounded-full" />
+                <button
+                  title="Ändra avatar"
+                  className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#00b06f] text-white flex items-center justify-center border border-[#191b1d]"
+                >
+                  <Pencil className="w-2.5 h-2.5" />
+                </button>
               </div>
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-extrabold text-sm text-white">{activePlayer.name}</h3>
-                  <span className="text-xs font-bold text-[#f5c147] bg-[#f5c147]/10 px-2 py-0.5 rounded-md border border-[#f5c147]/20">
-                    ⭐ {activePlayer.totalStars} stjärnor
-                  </span>
+
+              {/* Social Icon Pills */}
+              <div className="flex items-center gap-1.5 bg-[#232527] p-1.5 rounded-2xl border border-white/10">
+                <button title="Facebook" className="p-1.5 rounded-xl bg-blue-600/30 text-blue-400 hover:bg-blue-600/50 transition-colors">
+                  <Facebook className="w-4 h-4" />
+                </button>
+
+                <button title="Favorite Star" className="p-1.5 rounded-xl bg-[#f5c147]/20 text-[#f5c147] hover:bg-[#f5c147]/40 transition-colors">
+                  <Star className="w-4 h-4 fill-[#f5c147]" />
+                </button>
+
+                <button title="Dislike" className="p-1.5 rounded-xl bg-gray-700/50 text-gray-300 hover:bg-gray-700 transition-colors">
+                  <ThumbsDown className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Embedded XP Percentage Bar (Screenshot Green 55% Pill) */}
+              <div className="flex-1 min-w-[180px] bg-[#232527] border border-white/10 rounded-2xl p-1.5 flex items-center gap-2 shadow-inner">
+                <div className="w-7 h-7 rounded-xl bg-[#00b06f] flex items-center justify-center text-white text-xs font-black flex-shrink-0 shadow">
+                  ⚽
                 </div>
-                <p className="text-xs text-gray-400 font-medium mt-0.5">{activePlayer.levelTitle}</p>
-                <div className="w-full bg-[#191b1d] h-2 rounded-full mt-2 overflow-hidden border border-white/5">
+                <div className="flex-1 bg-[#191b1d] h-5 rounded-xl overflow-hidden relative border border-white/5">
                   <div
-                    className="bg-gradient-to-r from-[#00b06f] to-[#f5c147] h-full rounded-full transition-all duration-500"
-                    style={{ width: `${Math.min(100, (activePlayer.totalStars % 20) * 5)}%` }}
-                  />
+                    className="bg-[#00b06f] h-full rounded-xl transition-all duration-700 flex items-center justify-center text-[10px] font-black text-white"
+                    style={{ width: '55%' }}
+                  >
+                    55%
+                  </div>
                 </div>
               </div>
+
             </div>
-          )}
+
+          </div>
 
         </div>
 
-        {/* Right Column: 16:9 Roblox Game Pitch Banner & Big Play Button */}
-        <div className="lg:col-span-6 flex flex-col items-center">
+        {/* Right Column: 16:9 3D Roblox Stadium Banner & Play/Edit Buttons */}
+        <div className="lg:col-span-5 flex flex-col items-center">
           
-          <div className="w-full aspect-video relative rounded-2xl overflow-hidden border-2 border-white/10 shadow-2xl shadow-[#00b06f]/10 group">
+          {/* Banner */}
+          <div className="w-full aspect-video relative rounded-2xl overflow-hidden border-2 border-white/10 shadow-xl group">
             <img
               src="/roblox-banner.png"
-              alt="Lycksele Fotboll Legends Banner"
+              alt="Roblox Stadium Pitch Banner"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#191b1d] via-transparent to-transparent opacity-80" />
-
-            {/* Badge overlay on banner */}
-            <div className="absolute top-4 right-4 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 text-xs font-black text-white flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-[#00b06f]" />
-              Officiell P18 App
-            </div>
           </div>
 
-          {/* Action Buttons Section */}
-          <div className="w-full mt-4 flex flex-col sm:flex-row items-center gap-3">
+          {/* Action Buttons & Coach Tooltip Callout (Matching Screenshot) */}
+          <div className="w-full mt-3 flex flex-col sm:flex-row items-center gap-3 relative">
             
-            {/* Massive Roblox Green Play Button */}
+            {/* Massive Green SPELA CTA Button */}
             <button
               onClick={onOpenPlayModal}
-              className="w-full sm:flex-1 py-4 px-8 roblox-btn-primary flex items-center justify-center gap-3 text-xl font-black tracking-wider uppercase group shadow-xl"
+              className="w-full sm:flex-1 py-3.5 px-6 roblox-btn-primary flex items-center justify-center gap-2 text-lg sm:text-xl font-black tracking-wider uppercase shadow-xl"
             >
-              <Play className="w-7 h-7 fill-white group-hover:scale-110 transition-transform" />
-              <span>▶ SPELA</span>
+              <Play className="w-6 h-6 fill-white" />
+              <span>SPELA</span>
             </button>
 
-            {/* Coach Edit Drills Button if authenticated */}
-            {isCoach ? (
+            {/* Coach Edit Drills Button */}
+            <div className="w-full sm:w-auto relative">
               <Link
                 href="/tranare"
-                className="w-full sm:w-auto py-4 px-6 roblox-btn-secondary flex items-center justify-center gap-2 text-sm font-extrabold uppercase border border-[#00b06f]/50 text-[#00b06f]"
+                className="w-full py-3.5 px-5 bg-[#232527] border border-white/15 hover:border-[#00b06f]/50 rounded-xl flex items-center justify-center gap-2 text-xs sm:text-sm font-extrabold text-white uppercase transition-all"
               >
-                <Edit3 className="w-5 h-5" />
+                <Edit3 className="w-4 h-4 text-[#00b06f]" />
                 <span>REDIGERA ÖVNINGAR</span>
               </Link>
-            ) : (
-              <a
-                href="#topplista"
-                className="w-full sm:w-auto py-4 px-6 roblox-btn-secondary flex items-center justify-center gap-2 text-sm font-bold uppercase text-gray-300"
-              >
-                <span>Visa Topplista</span>
-              </a>
-            )}
+
+              {/* Tooltip callout bubble (Screenshot) */}
+              <div className="hidden md:block absolute top-full right-0 mt-2 w-64 bg-[#191b1d]/95 backdrop-blur-md p-3 rounded-xl border border-white/20 text-[11px] text-gray-300 shadow-2xl z-20">
+                <p className="font-bold text-white mb-1">
+                  Övningens Instruktioner och Videolänk (t.ex. YouTube/Vimeo)
+                </p>
+                <p className="text-[10px] text-gray-400">
+                  Lägg till en tydlig videolänk för att hjälpa dina spelare att förstå övningen.
+                </p>
+              </div>
+            </div>
 
           </div>
 

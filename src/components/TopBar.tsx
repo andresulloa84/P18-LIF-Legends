@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Search, Star, Settings, Shield, User, Trophy, Home, Dumbbell } from 'lucide-react';
+import { Search, Settings, Shield, User, Trophy, Home, Menu, X } from 'lucide-react';
 import CoachLoginModal from './CoachLoginModal';
 
 interface TopBarProps {
-  totalStars?: number;
+  totalBalls?: number;
   activePlayerName?: string;
   isCoach?: boolean;
   onOpenPlayModal?: () => void;
@@ -14,7 +14,7 @@ interface TopBarProps {
 }
 
 export default function TopBar({
-  totalStars = 0,
+  totalBalls = 0,
   activePlayerName,
   isCoach = false,
   onOpenPlayModal,
@@ -22,107 +22,103 @@ export default function TopBar({
 }: TopBarProps) {
   const [isCoachModalOpen, setIsCoachModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full px-4 py-3 bg-[#191b1d]/90 backdrop-blur-md border-b border-white/10">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-40 w-full px-3 sm:px-6 py-2.5 bg-[#191b1d] border-b border-white/10 shadow-md">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
           
-          {/* Logo & Brand */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00b06f] to-[#008050] flex items-center justify-center font-black text-xl text-white shadow-lg shadow-[#00b06f]/20 group-hover:scale-105 transition-transform">
-              LFL
-            </div>
-            <div>
-              <span className="font-extrabold text-lg text-white tracking-wide block leading-none">
-                LYCKSELE
-              </span>
-              <span className="font-black text-xs text-[#00b06f] tracking-widest block leading-tight">
-                FOTBOLL LEGENDS
-              </span>
+          {/* Roblox Square Logo */}
+          <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 bg-white text-[#191b1d] font-black text-xl flex items-center justify-center rounded-lg shadow-md group-hover:scale-105 transition-transform">
+              <span className="transform -rotate-12 block font-extrabold">O</span>
             </div>
           </Link>
 
-          {/* Navigation Pill Bar */}
-          <nav className="hidden lg:flex items-center gap-1 bg-[#232527] px-3 py-1.5 rounded-full border border-white/10 shadow-inner">
-            <Link
-              href="/"
-              className="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-bold text-white hover:bg-white/10 transition-colors"
-            >
-              <Home className="w-4 h-4 text-[#00b06f]" />
-              Hem
+          {/* Desktop Nav Links (Screenshot: Home, Playing, Games, Profile) */}
+          <nav className="hidden md:flex items-center gap-6 text-sm font-bold text-gray-200">
+            <Link href="/" className="hover:text-[#00b06f] transition-colors">
+              Home
             </Link>
-            <button
-              onClick={onOpenPlayModal}
-              className="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-bold text-white hover:bg-white/10 transition-colors"
-            >
-              <Dumbbell className="w-4 h-4 text-[#f5c147]" />
-              Övningar
+            <button onClick={onOpenPlayModal} className="hover:text-[#00b06f] transition-colors">
+              Playing
             </button>
-            <a
-              href="#topplista"
-              className="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-bold text-white hover:bg-white/10 transition-colors"
-            >
-              <Trophy className="w-4 h-4 text-blue-400" />
-              Topplista
-            </a>
+            <button onClick={onOpenPlayModal} className="hover:text-[#00b06f] transition-colors">
+              Games
+            </button>
+            {activePlayerName ? (
+              <span className="text-gray-300">Profile</span>
+            ) : (
+              <span className="text-gray-400">Profile</span>
+            )}
             {isCoach && (
-              <Link
-                href="/tranare"
-                className="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-bold text-[#00b06f] bg-[#00b06f]/10 border border-[#00b06f]/30 hover:bg-[#00b06f]/20 transition-colors"
-              >
-                <Shield className="w-4 h-4" />
-                Tränarpanel
+              <Link href="/tranare" className="text-[#00b06f] flex items-center gap-1">
+                <Shield className="w-4 h-4" /> Tränare
               </Link>
             )}
           </nav>
 
-          {/* Search Bar */}
-          <div className="hidden md:flex items-center flex-1 max-w-xs relative">
-            <Search className="w-4 h-4 text-gray-400 absolute left-3" />
+          {/* Screenshot Search Bar (Q Search) */}
+          <div className="flex-1 max-w-md mx-2 sm:mx-4 relative">
+            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-2.5" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Sök övningar..."
+              placeholder="Search"
               className="w-full bg-[#232527] border border-white/10 rounded-full pl-9 pr-4 py-1.5 text-xs text-white placeholder-gray-400 focus:outline-none focus:border-[#00b06f] transition-colors"
             />
           </div>
 
-          {/* Right Section: Stars Currency Counter & Settings */}
-          <div className="flex items-center gap-3">
-            {/* Roblox-Style Star Counter */}
-            <div className="flex items-center gap-2 bg-[#232527] px-3.5 py-1. rounded-full border border-[#f5c147]/30 shadow-md">
-              <Star className="w-4 h-4 text-[#f5c147] fill-[#f5c147] animate-pulse" />
-              <span className="font-black text-sm text-[#f5c147] tracking-wider">
-                {totalStars}
-              </span>
-              <span className="text-[10px] font-bold text-gray-400 uppercase hidden sm:inline">
-                Stjärnor
+          {/* Right Section: Roblox Currency ⚽ Bollar Counter & Settings */}
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            
+            {/* ⚽ Football Collection Counter */}
+            <div className="flex items-center gap-1.5 bg-[#232527] px-3 py-1.5 rounded-full border border-white/10 shadow-inner">
+              <span className="text-base sm:text-lg animate-bounce">⚽</span>
+              <span className="font-black text-xs sm:text-sm text-white tracking-wide">
+                {totalBalls}
               </span>
             </div>
 
-            {/* User Greeting Pill */}
-            {activePlayerName && (
-              <div className="hidden sm:flex items-center gap-2 bg-[#232527] px-3 py-1 rounded-full border border-white/10">
-                <User className="w-3.5 h-3.5 text-[#00b06f]" />
-                <span className="text-xs font-semibold text-gray-200 truncate max-w-[100px]">
-                  {activePlayerName}
-                </span>
-              </div>
-            )}
-
-            {/* Coach Settings Gear Button */}
+            {/* Coach Gear Settings Button */}
             <button
               onClick={() => setIsCoachModalOpen(true)}
-              title="Tränarinloggning / Inställningar"
-              className="p-2 rounded-xl bg-[#232527] border border-white/10 text-gray-300 hover:text-white hover:border-[#00b06f] hover:bg-[#2b2d31] transition-all"
+              title="Tränarinloggning / Settings"
+              className="p-1.5 sm:p-2 rounded-xl bg-[#232527] border border-white/10 text-gray-300 hover:text-white hover:border-[#00b06f] transition-all"
             >
-              <Settings className="w-5 h-5" />
+              <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
+
+            {/* Mobile Hamburger Menu Toggle */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-1.5 rounded-lg bg-[#232527] text-gray-300 hover:text-white"
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+
           </div>
 
         </div>
+
+        {/* Mobile Dropdown Navigation */}
+        {mobileMenuOpen && (
+          <div className="md:hidden mt-3 pt-3 border-t border-white/10 flex flex-col gap-2 bg-[#232527] p-3 rounded-xl">
+            <Link href="/" onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold text-white py-1">
+              Home
+            </Link>
+            <button onClick={() => { onOpenPlayModal?.(); setMobileMenuOpen(false); }} className="text-xs font-bold text-left text-white py-1">
+              Playing / Övningar
+            </button>
+            {isCoach && (
+              <Link href="/tranare" onClick={() => setMobileMenuOpen(false)} className="text-xs font-bold text-[#00b06f] py-1">
+                Tränarpanel
+              </Link>
+            )}
+          </div>
+        )}
       </header>
 
       {/* Coach Login Modal */}

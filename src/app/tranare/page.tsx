@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Shield, ArrowLeft, Users, BarChart3, Edit3, Copy, RefreshCw, UserPlus, Check, Star, Plus, ExternalLink } from 'lucide-react';
+import { Shield, ArrowLeft, Users, BarChart3, Edit3, Copy, RefreshCw, UserPlus, Check, Plus } from 'lucide-react';
 import TopBar from '@/components/TopBar';
 import SideBar from '@/components/SideBar';
 import CoachLoginModal from '@/components/CoachLoginModal';
+import BottomPillBar from '@/components/BottomPillBar';
 import { useAppStore } from '@/lib/store';
 import { Drill } from '@/lib/initialData';
 
@@ -26,14 +27,13 @@ export default function CoachDashboard() {
   const [newPlayerName, setNewPlayerName] = useState('');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
-  // Drill Editor Form state
   const [editingDrill, setEditingDrill] = useState<Partial<Drill>>({
     title: '',
     description: '',
     videoUrl: '',
     requiredLevel: 1,
     category: 'Kontroll',
-    starsReward: 1,
+    ballsReward: 1,
   });
 
   if (!isLoaded) return null;
@@ -90,12 +90,12 @@ export default function CoachDashboard() {
       videoUrl: editingDrill.videoUrl || 'https://www.youtube.com/embed/8kX1T9c4kQ8',
       requiredLevel: Number(editingDrill.requiredLevel) || 1,
       category: editingDrill.category || 'Kontroll',
-      starsReward: 1,
+      ballsReward: 1,
     };
 
     updateDrill(drillToSave);
-    setEditingDrill({ title: '', description: '', videoUrl: '', requiredLevel: 1, category: 'Kontroll', starsReward: 1 });
-    alert(`Övningen "${drillToSave.title}" har sparats och uppdaterats i realtid!`);
+    setEditingDrill({ title: '', description: '', videoUrl: '', requiredLevel: 1, category: 'Kontroll', ballsReward: 1 });
+    alert(`Övningen "${drillToSave.title}" har sparats!`);
   };
 
   return (
@@ -107,8 +107,7 @@ export default function CoachDashboard() {
 
         <main className="flex-1 md:ml-16 p-4 sm:p-8 max-w-7xl mx-auto w-full">
           
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div>
               <Link href="/" className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-white mb-2">
                 <ArrowLeft className="w-3.5 h-3.5 text-[#00b06f]" /> Tillbaka till Hubben
@@ -121,13 +120,12 @@ export default function CoachDashboard() {
 
             <button
               onClick={logoutCoach}
-              className="px-4 py-2 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl text-xs font-bold hover:bg-red-500/20 transition-all"
+              className="px-4 py-2 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl text-xs font-bold hover:bg-red-500/20"
             >
               Logga ut tränare
             </button>
           </div>
 
-          {/* Navigation Tabs */}
           <div className="flex flex-wrap items-center gap-2 mb-6 border-b border-white/10 pb-3">
             <button
               onClick={() => setActiveTab('roster')}
@@ -166,11 +164,9 @@ export default function CoachDashboard() {
             </button>
           </div>
 
-          {/* TAB 1: SPELARTRUPP (ROSTER MANAGEMENT) */}
           {activeTab === 'roster' && (
             <div className="space-y-6">
               
-              {/* Form: Add New Player */}
               <div className="roblox-card p-6 bg-[#232527]">
                 <h3 className="text-sm font-extrabold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
                   <UserPlus className="w-4 h-4 text-[#00b06f]" />
@@ -191,10 +187,9 @@ export default function CoachDashboard() {
                 </form>
               </div>
 
-              {/* Roster Table */}
               <div className="roblox-card p-6 bg-[#232527] overflow-x-auto">
                 <h3 className="text-sm font-extrabold text-white uppercase tracking-wider mb-4">
-                  Samtliga 34 Registrerade Spelare
+                  Samtliga {players.length} Registrerade Spelare
                 </h3>
 
                 <table className="w-full text-left text-xs">
@@ -203,7 +198,7 @@ export default function CoachDashboard() {
                       <th className="py-3 px-3">Spelare</th>
                       <th className="py-3 px-3">Användarnamn</th>
                       <th className="py-3 px-3">Nivå & Rang</th>
-                      <th className="py-3 px-3">Stjärnor</th>
+                      <th className="py-3 px-3">Bollar Samlade</th>
                       <th className="py-3 px-3 text-right">Åtgärder</th>
                     </tr>
                   </thead>
@@ -216,10 +211,8 @@ export default function CoachDashboard() {
                         </td>
                         <td className="py-3 px-3 text-[#00b06f] font-mono">@{p.username}</td>
                         <td className="py-3 px-3 font-medium text-gray-300">{p.levelTitle}</td>
-                        <td className="py-3 px-3 font-extrabold text-[#f5c147]">⭐ {p.totalStars}</td>
+                        <td className="py-3 px-3 font-extrabold text-white">⚽ {p.totalBalls}</td>
                         <td className="py-3 px-3 text-right space-x-2">
-                          
-                          {/* Copy Link Button */}
                           <button
                             onClick={() => copyLink(p.username, p.id)}
                             className="px-2.5 py-1 bg-[#191b1d] border border-white/10 text-gray-300 hover:text-white rounded-lg font-semibold inline-flex items-center gap-1 text-[11px]"
@@ -235,14 +228,12 @@ export default function CoachDashboard() {
                             )}
                           </button>
 
-                          {/* Reset Password */}
                           <button
                             onClick={() => resetPlayerPassword(p.id)}
                             className="px-2.5 py-1 bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 rounded-lg font-semibold inline-flex items-center gap-1 text-[11px]"
                           >
                             <RefreshCw className="w-3 h-3" /> Återställ lösen
                           </button>
-
                         </td>
                       </tr>
                     ))}
@@ -253,20 +244,19 @@ export default function CoachDashboard() {
             </div>
           )}
 
-          {/* TAB 2: ÖVNINGSSTATISTIK (ANALYTICS) */}
           {activeTab === 'analytics' && (
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {drills.map((d) => {
-                  const aggregateStars = players.length * 4; // Mock drill stats output
+                  const aggregateBalls = players.length * 5;
                   return (
                     <div key={d.id} className="roblox-card p-5 bg-[#232527]">
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-[10px] font-black uppercase text-[#00b06f] bg-[#00b06f]/10 px-2 py-0.5 rounded border border-[#00b06f]/20">
                           {d.category}
                         </span>
-                        <span className="text-xs font-bold text-[#f5c147]">
-                          ⭐ {aggregateStars} stjärnor totalt i truppen
+                        <span className="text-xs font-bold text-white">
+                          ⚽ {aggregateBalls} bollar samlade sammanlagt
                         </span>
                       </div>
                       <h4 className="font-extrabold text-base text-white">{d.title}</h4>
@@ -278,15 +268,13 @@ export default function CoachDashboard() {
             </div>
           )}
 
-          {/* TAB 3: HANTERA & REDIGERA ÖVNINGAR (DRILL EDITOR) */}
           {activeTab === 'editor' && (
             <div className="space-y-6">
               
-              {/* Form: Add or Edit Drill */}
               <div className="roblox-card p-6 bg-[#232527]">
                 <h3 className="text-sm font-extrabold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
                   <Plus className="w-4 h-4 text-[#00b06f]" />
-                  {editingDrill.id ? 'Redigera övning' : 'Skapa ny övning för truppen'}
+                  {editingDrill.id ? 'Redigera övning' : 'Skapa ny övning'}
                 </h3>
 
                 <form onSubmit={handleSaveDrill} className="space-y-4">
@@ -347,7 +335,6 @@ export default function CoachDashboard() {
                 </form>
               </div>
 
-              {/* Drills List View */}
               <div className="roblox-card p-6 bg-[#232527]">
                 <h3 className="text-sm font-extrabold text-white uppercase tracking-wider mb-4">
                   Befintliga Övningar ({drills.length})
@@ -377,6 +364,8 @@ export default function CoachDashboard() {
 
         </main>
       </div>
+
+      <BottomPillBar />
     </div>
   );
 }

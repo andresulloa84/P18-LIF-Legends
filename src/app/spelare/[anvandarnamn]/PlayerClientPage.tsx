@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Star, Play, Award, KeyRound, AlertCircle, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, Play, Award, KeyRound, AlertCircle, ShieldCheck } from 'lucide-react';
 import TopBar from '@/components/TopBar';
 import SideBar from '@/components/SideBar';
 import DrillModal from '@/components/DrillModal';
+import BottomPillBar from '@/components/BottomPillBar';
 import { useAppStore } from '@/lib/store';
 import { getLevelTitle } from '@/lib/initialData';
 
@@ -39,7 +40,7 @@ export default function PlayerClientPage({ anvandarnamn }: { anvandarnamn: strin
     return (
       <div className="min-h-screen bg-[#191b1d] flex flex-col items-center justify-center text-white">
         <div className="w-12 h-12 border-4 border-[#00b06f] border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="font-extrabold text-sm uppercase">Laddar spelarsida...</p>
+        <p className="font-extrabold text-sm uppercase tracking-wider">Laddar spelarsida...</p>
       </div>
     );
   }
@@ -61,7 +62,7 @@ export default function PlayerClientPage({ anvandarnamn }: { anvandarnamn: strin
     );
   }
 
-  const levelInfo = getLevelTitle(player.totalStars);
+  const levelInfo = getLevelTitle(player.totalBalls);
 
   const handlePlayerLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,7 +78,7 @@ export default function PlayerClientPage({ anvandarnamn }: { anvandarnamn: strin
   return (
     <div className="min-h-screen bg-[#191b1d] text-white flex flex-col">
       <TopBar
-        totalStars={player.totalStars}
+        totalBalls={player.totalBalls}
         activePlayerName={player.name}
         isCoach={isCoachLoggedIn}
         onOpenPlayModal={() => setIsDrillModalOpen(true)}
@@ -90,7 +91,7 @@ export default function PlayerClientPage({ anvandarnamn }: { anvandarnamn: strin
           
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-white mb-6 bg-[#232527] px-3 py-1.5 rounded-full border border-white/10"
+            className="inline-flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-white mb-6 bg-[#232527] px-3.5 py-1.5 rounded-full border border-white/10"
           >
             <ArrowLeft className="w-4 h-4 text-[#00b06f]" />
             Tillbaka till Huvudsidan
@@ -105,7 +106,7 @@ export default function PlayerClientPage({ anvandarnamn }: { anvandarnamn: strin
 
               <div className="flex-1 text-center sm:text-left">
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-2">
-                  <span className="text-xs font-black bg-[#f5c147]/20 text-[#f5c147] px-2.5 py-0.5 rounded-full border border-[#f5c147]/30">
+                  <span className="text-xs font-black bg-[#00b06f]/20 text-[#00b06f] px-2.5 py-0.5 rounded-full border border-[#00b06f]/30">
                     {levelInfo.badge} {levelInfo.title}
                   </span>
                   <span className="text-xs font-bold text-gray-400 bg-[#191b1d] px-2.5 py-0.5 rounded-full border border-white/5">
@@ -122,10 +123,10 @@ export default function PlayerClientPage({ anvandarnamn }: { anvandarnamn: strin
                 </p>
 
                 <div className="mt-4 flex items-center justify-center sm:justify-start gap-2">
-                  <div className="flex items-center gap-1.5 bg-[#191b1d] px-4 py-1.5 rounded-xl border border-[#f5c147]/30">
-                    <Star className="w-4 h-4 text-[#f5c147] fill-[#f5c147]" />
-                    <span className="font-black text-base text-[#f5c147]">{player.totalStars}</span>
-                    <span className="text-xs text-gray-400 font-bold uppercase">Stjärnor</span>
+                  <div className="flex items-center gap-2 bg-[#191b1d] px-4 py-1.5 rounded-xl border border-white/10">
+                    <span className="text-lg">⚽</span>
+                    <span className="font-black text-base text-white">{player.totalBalls}</span>
+                    <span className="text-xs text-gray-400 font-bold uppercase">Bollar samlade</span>
                   </div>
                 </div>
               </div>
@@ -141,10 +142,10 @@ export default function PlayerClientPage({ anvandarnamn }: { anvandarnamn: strin
               </div>
 
               <h3 className="text-lg font-black text-white uppercase tracking-wide mb-1">
-                Logga in för att spela
+                Logga in för att samla bollar
               </h3>
               <p className="text-xs text-gray-400 mb-6">
-                Skriv ditt lösenord för att registrera nya övningar och samla stjärnor.
+                Skriv ditt lösenord för att genomföra uppgifter och samla fler bollar!
               </p>
 
               {errorMessage && (
@@ -186,8 +187,8 @@ export default function PlayerClientPage({ anvandarnamn }: { anvandarnamn: strin
                   <span className="text-xs font-black text-[#00b06f] uppercase tracking-wider block mb-1">
                     Redo för nästa bollmästarpass?
                   </span>
-                  <h3 className="text-xl font-black text-white">Välj övning och samla +1 stjärna!</h3>
-                  <p className="text-xs text-gray-400 mt-1">Du har samlat {player.totalStars} stjärnor totalt.</p>
+                  <h3 className="text-xl font-black text-white">Välj en uppgift och samla +1 boll ⚽!</h3>
+                  <p className="text-xs text-gray-400 mt-1">Du har samlat {player.totalBalls} bollar totalt.</p>
                 </div>
 
                 <button
@@ -202,12 +203,12 @@ export default function PlayerClientPage({ anvandarnamn }: { anvandarnamn: strin
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="roblox-card p-5 bg-[#232527]">
                   <h4 className="font-extrabold text-sm text-white mb-2 flex items-center gap-2">
-                    <Award className="w-4 h-4 text-[#f5c147]" />
+                    <Award className="w-4 h-4 text-[#00b06f]" />
                     Nuvarande Rang & Nivå
                   </h4>
                   <p className="text-lg font-black text-[#00b06f]">{levelInfo.title}</p>
                   <p className="text-xs text-gray-400 mt-1">
-                    Nästa nivå kräver totalt {levelInfo.nextLevelMin} stjärnor.
+                    Nästa nivå kräver totalt {levelInfo.nextLevelMin} bollar.
                   </p>
                 </div>
 
@@ -226,6 +227,8 @@ export default function PlayerClientPage({ anvandarnamn }: { anvandarnamn: strin
 
         </main>
       </div>
+
+      <BottomPillBar />
 
       <DrillModal
         isOpen={isDrillModalOpen}

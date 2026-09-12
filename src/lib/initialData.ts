@@ -1,8 +1,8 @@
 export interface Player {
   id: string;
   name: string;
-  username: string; // URL slug e.g. "julian-ulloa-nilsson" or "julian"
-  totalStars: number;
+  username: string; // URL slug e.g. "julian-ulloa-nilsson"
+  totalBalls: number; // Football collection counter
   currentLevel: number;
   levelTitle: string;
   avatarUrl: string;
@@ -16,7 +16,7 @@ export interface Drill {
   videoUrl: string;
   requiredLevel: number;
   category: string;
-  starsReward: number;
+  ballsReward: number;
 }
 
 export interface DrillLog {
@@ -24,20 +24,20 @@ export interface DrillLog {
   playerId: string;
   drillId: string;
   timestamp: string;
-  starsEarned: number;
+  ballsEarned: number;
 }
 
 export const LEVEL_TIERS = [
-  { level: 1, title: 'Nivå 1: Gräsrotslirare', minStars: 0, maxStars: 19, badge: '🌱' },
-  { level: 2, title: 'Nivå 2: Dribbler', minStars: 20, maxStars: 49, badge: '⚽' },
-  { level: 3, title: 'Nivå 3: Bollmagiker', minStars: 50, maxStars: 99, badge: '🪄' },
-  { level: 4, title: 'Nivå 4: Mästare', minStars: 100, maxStars: 9999, badge: '👑' },
+  { level: 1, title: 'Nivå 1: Gräsrotslirare', minBalls: 0, maxBalls: 19, badge: '🌱' },
+  { level: 2, title: 'Nivå 2: Dribbler', minBalls: 20, maxBalls: 49, badge: '⚽' },
+  { level: 3, title: 'Nivå 3: Bollmagiker', minBalls: 50, maxBalls: 99, badge: '🪄' },
+  { level: 4, title: 'Nivå 4: Mästare', minBalls: 100, maxBalls: 9999, badge: '👑' },
 ];
 
-export function getLevelTitle(stars: number): { level: number; title: string; badge: string; nextLevelMin: number } {
-  if (stars >= 100) return { level: 4, title: 'Nivå 4: Mästare', badge: '👑', nextLevelMin: 100 };
-  if (stars >= 50) return { level: 3, title: 'Nivå 3: Bollmagiker', badge: '🪄', nextLevelMin: 100 };
-  if (stars >= 20) return { level: 2, title: 'Nivå 2: Dribbler', badge: '⚽', nextLevelMin: 50 };
+export function getLevelTitle(balls: number): { level: number; title: string; badge: string; nextLevelMin: number } {
+  if (balls >= 100) return { level: 4, title: 'Nivå 4: Mästare', badge: '👑', nextLevelMin: 100 };
+  if (balls >= 50) return { level: 3, title: 'Nivå 3: Bollmagiker', badge: '🪄', nextLevelMin: 100 };
+  if (balls >= 20) return { level: 2, title: 'Nivå 2: Dribbler', badge: '⚽', nextLevelMin: 50 };
   return { level: 1, title: 'Nivå 1: Gräsrotslirare', badge: '🌱', nextLevelMin: 20 };
 }
 
@@ -46,7 +46,7 @@ export function slugify(name: string): string {
   return name
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // remove accents
+    .replace(/[\u0300-\u036f]/g, '')
     .replace(/å/g, 'a')
     .replace(/ä/g, 'a')
     .replace(/ö/g, 'o')
@@ -92,26 +92,26 @@ const RAW_PLAYER_NAMES = [
   "Axel Öhman"
 ];
 
-// Pre-seeded initial star counts to make the leaderboard look active & fun
-const INITIAL_STAR_PRESETS: Record<string, number> = {
-  "julian-ulloa-nilsson": 55,
-  "leo-kaminski": 42,
-  "abbe-backstrom": 38,
-  "te-ahrling": 28,
-  "alfred-bjorklund": 25,
+// Pre-seeded initial ball counts to make the leaderboard match screenshot & look active
+const INITIAL_BALL_PRESETS: Record<string, number> = {
+  "julian-ulloa-nilsson": 166,
+  "leo-kaminski": 54,
+  "abbe-backstrom": 30,
+  "teo-ahrling": 29,
+  "alfred-bjorklund": 10,
   "axel-ohman": 18,
   "constantin-dahlstrom": 15,
 };
 
 export const INITIAL_PLAYERS: Player[] = RAW_PLAYER_NAMES.map((fullName, index) => {
   const username = slugify(fullName);
-  const stars = INITIAL_STAR_PRESETS[username] ?? (10 + (index % 15) * 2);
-  const levelInfo = getLevelTitle(stars);
+  const balls = INITIAL_BALL_PRESETS[username] ?? (10 + (index % 15) * 2);
+  const levelInfo = getLevelTitle(balls);
   return {
     id: `player-${index + 1}`,
     name: fullName,
     username: username,
-    totalStars: stars,
+    totalBalls: balls,
     currentLevel: levelInfo.level,
     levelTitle: levelInfo.title,
     avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(username)}`,
@@ -127,7 +127,7 @@ export const INITIAL_DRILLS: Drill[] = [
     videoUrl: 'https://www.youtube.com/embed/8kX1T9c4kQ8',
     requiredLevel: 1,
     category: 'Kontroll',
-    starsReward: 1
+    ballsReward: 1
   },
   {
     id: 'drill-2',
@@ -136,7 +136,7 @@ export const INITIAL_DRILLS: Drill[] = [
     videoUrl: 'https://www.youtube.com/embed/3bM0Yn_3c5c',
     requiredLevel: 1,
     category: 'Känsla',
-    starsReward: 1
+    ballsReward: 1
   },
   {
     id: 'drill-3',
@@ -145,7 +145,7 @@ export const INITIAL_DRILLS: Drill[] = [
     videoUrl: 'https://www.youtube.com/embed/5aKj8p76mH0',
     requiredLevel: 2,
     category: 'Vändningar',
-    starsReward: 1
+    ballsReward: 1
   },
   {
     id: 'drill-4',
@@ -154,7 +154,7 @@ export const INITIAL_DRILLS: Drill[] = [
     videoUrl: 'https://www.youtube.com/embed/2vM90v3k9qQ',
     requiredLevel: 2,
     category: 'Finter',
-    starsReward: 1
+    ballsReward: 1
   },
   {
     id: 'drill-5',
@@ -163,7 +163,7 @@ export const INITIAL_DRILLS: Drill[] = [
     videoUrl: 'https://www.youtube.com/embed/4xL-9yZ98fM',
     requiredLevel: 3,
     category: 'Spetsteknik',
-    starsReward: 1
+    ballsReward: 1
   },
   {
     id: 'drill-6',
@@ -172,6 +172,6 @@ export const INITIAL_DRILLS: Drill[] = [
     videoUrl: 'https://www.youtube.com/embed/9Z9lG8N4y2w',
     requiredLevel: 4,
     category: 'Mästarklass',
-    starsReward: 1
+    ballsReward: 1
   }
 ];

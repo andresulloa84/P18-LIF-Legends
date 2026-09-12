@@ -4,18 +4,18 @@ import { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { Player, Drill, INITIAL_PLAYERS, INITIAL_DRILLS, getLevelTitle } from './initialData';
 
-const PLAYERS_STORAGE_KEY = 'lycksele_legends_players_v2';
-const DRILLS_STORAGE_KEY = 'lycksele_legends_drills_v2';
-const ACTIVE_PLAYER_KEY = 'lycksele_legends_active_player';
+const PLAYERS_STORAGE_KEY = 'lycksele_legends_players_v3';
+const DRILLS_STORAGE_KEY = 'lycksele_legends_drills_v3';
+const ACTIVE_PLAYER_KEY = 'lycksele_legends_active_player_v3';
 const COACH_AUTH_KEY = 'lycksele_legends_coach_auth';
 
-export function triggerStarConfetti() {
+export function triggerBallConfetti() {
   if (typeof window === 'undefined') return;
   confetti({
-    particleCount: 70,
-    spread: 60,
+    particleCount: 80,
+    spread: 70,
     origin: { y: 0.6 },
-    colors: ['#00b06f', '#f5c147', '#ffffff', '#3b82f6']
+    colors: ['#00b06f', '#00e676', '#ffffff', '#232527']
   });
 }
 
@@ -47,7 +47,6 @@ export function useAppStore() {
   const [isCoachLoggedIn, setIsCoachLoggedIn] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
-  // Initialize from LocalStorage or default pre-seeded 34 players
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -72,7 +71,6 @@ export function useAppStore() {
       if (savedActivePlayer) {
         setActivePlayer(JSON.parse(savedActivePlayer));
       } else {
-        // Default to first player (e.g. Julián or Leo) if none selected
         setActivePlayer(INITIAL_PLAYERS.find(p => p.username === 'julian-ulloa-nilsson') || INITIAL_PLAYERS[0]);
       }
 
@@ -89,7 +87,6 @@ export function useAppStore() {
     }
   }, []);
 
-  // Save changes
   const savePlayers = (updated: Player[]) => {
     setPlayers(updated);
     if (typeof window !== 'undefined') {
@@ -104,7 +101,6 @@ export function useAppStore() {
     }
   };
 
-  // Player login (case-insensitive default password matching username)
   const loginPlayer = (username: string, passwordInput: string): { success: boolean; message: string; player?: Player } => {
     const targetPlayer = players.find(
       p => p.username.toLowerCase() === username.toLowerCase() || p.name.toLowerCase() === username.toLowerCase()
@@ -114,7 +110,6 @@ export function useAppStore() {
       return { success: false, message: 'Spelaren hittades inte i truppen.' };
     }
 
-    // Default password requirement: case-insensitive username match
     const cleanPassword = passwordInput.trim().toLowerCase();
     const cleanExpectedUser = targetPlayer.username.toLowerCase();
     const cleanExpectedName = targetPlayer.name.toLowerCase();
@@ -130,25 +125,24 @@ export function useAppStore() {
     return { success: false, message: 'Felaktigt lösenord. Standardlösenord är ditt användarnamn.' };
   };
 
-  // Log drill activity (+1 star)
+  // Log drill activity (+1 Ball ⚽)
   const logDrillActivity = (drillId: string): { leveledUp: boolean; newLevel?: number; newLevelTitle?: string } => {
     if (!activePlayer) return { leveledUp: false };
 
-    const oldStars = activePlayer.totalStars;
-    const newStars = oldStars + 1;
-    const oldLevelInfo = getLevelTitle(oldStars);
-    const newLevelInfo = getLevelTitle(newStars);
+    const oldBalls = activePlayer.totalBalls;
+    const newBalls = oldBalls + 1;
+    const oldLevelInfo = getLevelTitle(oldBalls);
+    const newLevelInfo = getLevelTitle(newBalls);
 
     const leveledUp = newLevelInfo.level > oldLevelInfo.level;
 
     const updatedPlayer: Player = {
       ...activePlayer,
-      totalStars: newStars,
+      totalBalls: newBalls,
       currentLevel: newLevelInfo.level,
       levelTitle: newLevelInfo.title,
     };
 
-    // Update active player & players list
     setActivePlayer(updatedPlayer);
     if (typeof window !== 'undefined') {
       localStorage.setItem(ACTIVE_PLAYER_KEY, JSON.stringify(updatedPlayer));
@@ -157,11 +151,10 @@ export function useAppStore() {
     const updatedList = players.map(p => (p.id === updatedPlayer.id ? updatedPlayer : p));
     savePlayers(updatedList);
 
-    // Confetti
     if (leveledUp) {
       triggerLevelUpConfetti();
     } else {
-      triggerStarConfetti();
+      triggerBallConfetti();
     }
 
     return {
@@ -171,7 +164,6 @@ export function useAppStore() {
     };
   };
 
-  // Coach auth
   const loginCoach = (password: string): boolean => {
     if (password.toLowerCase() === 'legend' || password.toLowerCase() === 'p18' || password.length > 0) {
       setIsCoachLoggedIn(true);
@@ -190,7 +182,6 @@ export function useAppStore() {
     }
   };
 
-  // Coach roster management
   const addPlayer = (name: string): Player => {
     const slug = name
       .toLowerCase()
@@ -200,7 +191,7 @@ export function useAppStore() {
       id: `player-${Date.now()}`,
       name,
       username: slug,
-      totalStars: 0,
+      totalBalls: 0,
       currentLevel: 1,
       levelTitle: 'Nivå 1: Gräsrotslirare',
       avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(slug)}`,
@@ -213,7 +204,6 @@ export function useAppStore() {
   };
 
   const resetPlayerPassword = (playerId: string) => {
-    // Password reset confirmation
     alert(`Lösenordet för spelaren har återställts till deras användarnamn.`);
   };
 
