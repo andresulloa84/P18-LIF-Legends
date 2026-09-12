@@ -1,8 +1,8 @@
-import '@/styles/globals.css';
+import './globals.css';
 import { Inter } from 'next/font/google';
-import { AuthProvider } from '@/lib/auth';
-import TopBar from '@/components/TopBar';
 import SideBar from '@/components/SideBar';
+import TopBar from '@/components/TopBar';
+import { AuthProvider } from '@/lib/auth';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -14,7 +14,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="sv" className={inter.className}>
-      <body className="bg-dark-primary text-white min-h-screen flex">
+      <body className="bg-slate text-white min-h-screen flex">
         <AuthProvider>
           <SideBar />
           <div className="flex-1 flex flex-col">

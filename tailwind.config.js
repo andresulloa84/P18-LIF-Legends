@@ -1,19 +1,21 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: 'class',
   content: [
-    './src/**/*.{js,ts,jsx,tsx}',
-    './app/**/*.{js,ts,jsx,tsx}',
+    './src/**/*.{js,jsx,ts,tsx,mdx}',
+    './components/**/*.{js,jsx,ts,tsx,mdx}'
   ],
   theme: {
     extend: {
       colors: {
-        'dark-primary': '#191B1D',
-        'dark-secondary': '#232527',
-        'cta-green': '#00B06F',
-        'gold-star': '#F5C147',
+        slate: '#1e293b',
+        neonGreen: '#39ff14',
+        gold: '#ffd700',
+        robux: '#c41e3a'
       },
-    },
+      fontFamily: {
+        inter: ['Inter', 'system-ui']
+      }
+    }
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/forms')]
 };
