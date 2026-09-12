@@ -1,0 +1,5 @@
+{
+  "artifactType":  "ARTIFACT_TYPE_OTHER",
+  "summary":  "Add tsconfig to ensure alias works in CI",
+  "updatedAt":  "2026-09-12T22:02:13.758145600Z"
+}
