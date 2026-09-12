@@ -1,0 +1,9 @@
+// jsconfig.json to enable '@/...' imports
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  }
+}
