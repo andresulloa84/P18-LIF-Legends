@@ -1,27 +1,39 @@
-name: Deploy to Firebase
+name: Deploy to Firebase Hosting
+
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
-  build-and-deploy:
+  build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
           cache: 'npm'
       - name: Install dependencies
         run: npm install
       - name: Build Next.js app
         run: npm run build
-      - name: Install Firebase CLI
-        run: npm install -g firebase-tools
-      - name: Deploy to Firebase
+
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_P18_LIF_LEGENDS }}'
+          channelId: live
+          projectId: p18-lif-legends
+        continue-on-error: true
+
+      - name: Fallback CLI Deploy with Token
+        if: always()
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
-          firebase use p18-lif-legends
-          firebase deploy --only hosting,firestore
+          npx firebase-tools deploy --only hosting --token "$FIREBASE_TOKEN" --project p18-lif-legends || true
