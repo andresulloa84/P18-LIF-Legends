@@ -1,28 +1,45 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { TeknikOvning } from '@/data/teknikovningar';
+import { TEKNIKOVNINGAR, TeknikOvning } from '@/data/teknikovningar';
 
 interface DrillModalProps {
-  ovning: TeknikOvning | null;
+  ovning?: TeknikOvning | null;
+  isOpen?: boolean;
   onClose: () => void;
-  onComplete: (starRating: number) => void;
+  onComplete?: (starRating: number) => void;
+  drills?: any[];
+  activePlayer?: any;
+  onLogActivity?: (drillId: string) => void;
 }
 
-export default function DrillModal({ ovning, onClose, onComplete }: DrillModalProps) {
-  const [timerSeconds, setTimerSeconds] = useState(0);
+export default function DrillModal({
+  ovning: propOvning,
+  isOpen = true,
+  onClose,
+  onComplete,
+  drills,
+  activePlayer,
+  onLogActivity,
+}: DrillModalProps) {
+  const [selectedOvning, setSelectedOvning] = useState<TeknikOvning | null>(propOvning || TEKNIKOVNINGAR[0]);
+  const [timerSeconds, setTimerSeconds] = useState(30);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [selectedStars, setSelectedStars] = useState(3);
   const [currentTab, setCurrentTab] = useState<'instruktioner' | 'demo' | 'tips'>('instruktioner');
 
   useEffect(() => {
-    if (ovning) {
-      setTimerSeconds(ovning.targetSeconds);
-      setIsTimerRunning(false);
-      setSelectedStars(3);
-      setCurrentTab('instruktioner');
+    if (propOvning) {
+      setSelectedOvning(propOvning);
+      setTimerSeconds(propOvning.targetSeconds);
+    } else if (TEKNIKOVNINGAR.length > 0) {
+      setSelectedOvning(TEKNIKOVNINGAR[0]);
+      setTimerSeconds(TEKNIKOVNINGAR[0].targetSeconds);
     }
-  }, [ovning]);
+    setIsTimerRunning(false);
+    setSelectedStars(3);
+    setCurrentTab('instruktioner');
+  }, [propOvning]);
 
   useEffect(() => {
     let interval: any = null;
@@ -36,12 +53,25 @@ export default function DrillModal({ ovning, onClose, onComplete }: DrillModalPr
     return () => clearInterval(interval);
   }, [isTimerRunning, timerSeconds]);
 
-  if (!ovning) return null;
+  if (!isOpen && !propOvning) return null;
+  if (!selectedOvning) return null;
 
   const toggleTimer = () => setIsTimerRunning(!isTimerRunning);
   const resetTimer = () => {
     setIsTimerRunning(false);
-    setTimerSeconds(ovning.targetSeconds);
+    setTimerSeconds(selectedOvning.targetSeconds);
+  };
+
+  const handleFinish = () => {
+    if (onComplete) {
+      onComplete(selectedStars);
+    } else if (onLogActivity && selectedOvning) {
+      onLogActivity(selectedOvning.id);
+      alert(`🎉 Du genomförde ${selectedOvning.title}! +1 Boll tillagd!`);
+      onClose();
+    } else {
+      onClose();
+    }
   };
 
   return (
@@ -58,18 +88,41 @@ export default function DrillModal({ ovning, onClose, onComplete }: DrillModalPr
         {/* Header */}
         <div className="flex items-center space-x-3 mb-4 pr-12">
           <div className="w-14 h-14 rounded-2xl bg-slate-800 border-3 border-black flex items-center justify-center text-3xl shrink-0 shadow-roblox-btn-sm">
-            {ovning.badgeIcon}
+            {selectedOvning.badgeIcon}
           </div>
           <div>
             <span
               className="text-xs font-black px-2.5 py-0.5 rounded-lg border border-black uppercase text-black"
-              style={{ backgroundColor: ovning.difficultyColor }}
+              style={{ backgroundColor: selectedOvning.difficultyColor }}
             >
-              {ovning.categoryLabel}
+              {selectedOvning.categoryLabel}
             </span>
-            <h2 className="text-xl md:text-2xl font-black text-white mt-0.5">{ovning.title}</h2>
+            <h2 className="text-xl md:text-2xl font-black text-white mt-0.5">{selectedOvning.title}</h2>
           </div>
         </div>
+
+        {/* Drill Selector if launched from player page */}
+        {drills && (
+          <div className="mb-4">
+            <label className="text-xs font-black text-slate-400 block mb-1">VÄLJ ÖVNING:</label>
+            <select
+              onChange={(e) => {
+                const found = TEKNIKOVNINGAR.find((d) => d.id === e.target.value);
+                if (found) {
+                  setSelectedOvning(found);
+                  setTimerSeconds(found.targetSeconds);
+                }
+              }}
+              className="w-full bg-robloxCard border-2 border-black rounded-xl p-2 text-sm text-white font-bold"
+            >
+              {TEKNIKOVNINGAR.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.badgeIcon} {d.title} ({d.categoryLabel})
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {/* Navigation Tabs */}
         <div className="flex space-x-2 border-b-2 border-robloxBorder pb-3 mb-4">
@@ -103,7 +156,7 @@ export default function DrillModal({ ovning, onClose, onComplete }: DrillModalPr
         <div className="bg-robloxCard border-2 border-black rounded-2xl p-4 md:p-5 mb-5 min-h-[160px]">
           {currentTab === 'instruktioner' && (
             <ol className="space-y-2 text-sm text-slate-200">
-              {ovning.instructions.map((step, idx) => (
+              {selectedOvning.instructions.map((step, idx) => (
                 <li key={idx} className="flex items-start space-x-2">
                   <span className="bg-robloxBlue text-white font-black text-xs px-2 py-0.5 rounded-lg border border-black shrink-0">
                     {idx + 1}
@@ -120,7 +173,7 @@ export default function DrillModal({ ovning, onClose, onComplete }: DrillModalPr
                 <div className="absolute inset-0 bg-gradient-to-r from-robloxBlue/10 to-neonLime/10" />
                 <div className="text-6xl animate-bounce">⚽</div>
                 <div className="absolute bottom-2 text-[11px] font-bold text-robloxCyan bg-black/60 px-3 py-1 rounded-full border border-robloxCyan">
-                  {ovning.animationType.toUpperCase()} SIMULATOR • TEMPO 100%
+                  {selectedOvning.animationType.toUpperCase()} SIMULATOR • TEMPO 100%
                 </div>
               </div>
               <p className="text-xs text-slate-400 mt-2">
@@ -134,7 +187,7 @@ export default function DrillModal({ ovning, onClose, onComplete }: DrillModalPr
               <span className="text-3xl">💡</span>
               <div>
                 <h4 className="text-xs font-black text-robloxGold uppercase">Tränarens Pro-Tips</h4>
-                <p className="text-sm text-slate-200 mt-1">{ovning.tips}</p>
+                <p className="text-sm text-slate-200 mt-1">{selectedOvning.tips}</p>
               </div>
             </div>
           )}
@@ -145,7 +198,7 @@ export default function DrillModal({ ovning, onClose, onComplete }: DrillModalPr
           <div>
             <div className="text-xs font-black text-slate-400">TRÄNINGSMÅL</div>
             <div className="text-sm font-black text-white">
-              🎯 {ovning.targetReps} Repetitioner ({ovning.targetSeconds} sekunder)
+              🎯 {selectedOvning.targetReps} Repetitioner ({selectedOvning.targetSeconds} sekunder)
             </div>
           </div>
 
@@ -191,7 +244,7 @@ export default function DrillModal({ ovning, onClose, onComplete }: DrillModalPr
           </div>
 
           <button
-            onClick={() => onComplete(selectedStars)}
+            onClick={handleFinish}
             className="w-full roblox-btn-gold py-3 text-base md:text-lg font-black tracking-wider uppercase shadow-gold-glow"
           >
             MARKERA KLAR & SAMLA XP! 🏆

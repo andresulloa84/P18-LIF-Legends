@@ -4,15 +4,24 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-export default function SideBar() {
+interface SideBarProps {
+  onOpenDrills?: () => void;
+  isCoach?: boolean;
+}
+
+export default function SideBar({ onOpenDrills, isCoach }: SideBarProps) {
   const pathname = usePathname();
 
   const navItems = [
-    { href: '/', label: 'ÖVNINGAR', icon: '⚽', color: 'blue' },
-    { href: '/topplista', label: 'TOPPLISTA', icon: '🏆', color: 'gold' },
-    { href: '/shop', label: 'BOLL-AFFÄR', icon: '🛒', color: 'green' },
-    { href: '/profil', label: 'MIN PROFIL', icon: '👤', color: 'purple' },
+    { href: '/', label: 'ÖVNINGAR', icon: '⚽' },
+    { href: '/topplista', label: 'TOPPLISTA', icon: '🏆' },
+    { href: '/shop', label: 'BOLL-AFFÄR', icon: '🛒' },
+    { href: '/profil', label: 'MIN PROFIL', icon: '👤' },
   ];
+
+  if (isCoach) {
+    navItems.push({ href: '/tranare', label: 'TRÄNARE', icon: '📋' });
+  }
 
   return (
     <aside className="w-full md:w-64 bg-robloxDark border-r-4 border-robloxBorder p-4 flex flex-row md:flex-col justify-around md:justify-start space-x-2 md:space-x-0 md:space-y-4 shadow-2xl z-20">

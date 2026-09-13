@@ -4,9 +4,23 @@ import React from 'react';
 import { useGame } from '@/context/GameContext';
 import Link from 'next/link';
 
-export default function TopBar() {
+interface TopBarProps {
+  totalBalls?: number;
+  activePlayerName?: string;
+  isCoach?: boolean;
+  onOpenPlayModal?: () => void;
+}
+
+export default function TopBar({
+  totalBalls,
+  activePlayerName,
+  isCoach,
+  onOpenPlayModal,
+}: TopBarProps) {
   const { stats, toggleSound } = useGame();
 
+  const displayName = activePlayerName || stats.playerName;
+  const displayStars = totalBalls !== undefined ? totalBalls : stats.stars;
   const xpPercent = Math.min(100, Math.round((stats.xp / stats.xpToNextLevel) * 100));
 
   return (
@@ -26,9 +40,9 @@ export default function TopBar() {
 
         <div className="hidden sm:flex flex-col">
           <div className="flex items-center space-x-2">
-            <span className="font-extrabold text-lg text-white tracking-wide">{stats.playerName}</span>
+            <span className="font-extrabold text-lg text-white tracking-wide">{displayName}</span>
             <span className="text-xs bg-robloxCard text-robloxCyan px-2 py-0.5 rounded-md border border-robloxBorder font-semibold">
-              LYCKSELE FL
+              {isCoach ? 'TRÄNARE 📋' : 'LYCKSELE FL'}
             </span>
           </div>
 
@@ -60,10 +74,19 @@ export default function TopBar() {
 
       {/* Right: Currency Counter & Action Widgets */}
       <div className="flex items-center space-x-2 md:space-x-4">
+        {onOpenPlayModal && (
+          <button
+            onClick={onOpenPlayModal}
+            className="roblox-btn-green px-3 py-1.5 text-xs font-black hidden sm:block"
+          >
+            ▶ ÖVNINGAR
+          </button>
+        )}
+
         {/* Star Counter */}
         <div className="flex items-center bg-robloxCard border-3 border-black rounded-xl px-3 py-1.5 shadow-roblox-btn-sm">
           <span className="text-xl mr-1.5 animate-pulse">⭐</span>
-          <span className="font-black text-robloxGold text-base md:text-lg">{stats.stars}</span>
+          <span className="font-black text-robloxGold text-base md:text-lg">{displayStars}</span>
         </div>
 
         {/* Coins Counter */}

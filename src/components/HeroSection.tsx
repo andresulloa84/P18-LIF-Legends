@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Play, Edit3, ThumbsDown, Star, Facebook, Pencil } from 'lucide-react';
+import { Play, Edit3, ThumbsDown, Star, Share2, Pencil } from 'lucide-react';
 import { Player } from '@/lib/initialData';
 
 interface HeroSectionProps {
@@ -63,8 +63,8 @@ export default function HeroSection({ activePlayer, isCoach, onOpenPlayModal }: 
 
               {/* Social Icon Pills */}
               <div className="flex items-center gap-1.5 bg-[#232527] p-1.5 rounded-2xl border border-white/10">
-                <button title="Facebook" className="p-1.5 rounded-xl bg-blue-600/30 text-blue-400 hover:bg-blue-600/50 transition-colors">
-                  <Facebook className="w-4 h-4" />
+                <button title="Dela" className="p-1.5 rounded-xl bg-blue-600/30 text-blue-400 hover:bg-blue-600/50 transition-colors">
+                  <Share2 className="w-4 h-4" />
                 </button>
 
                 <button title="Favorite Star" className="p-1.5 rounded-xl bg-[#f5c147]/20 text-[#f5c147] hover:bg-[#f5c147]/40 transition-colors">
