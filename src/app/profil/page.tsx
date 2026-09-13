@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { useGame } from '@/context/GameContext';
 import { TEKNIKOVNINGAR } from '@/data/teknikovningar';
 
@@ -22,7 +23,18 @@ export default function ProfilPage() {
   ];
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="min-h-screen bg-[#191b1d] text-white p-4 md:p-8 max-w-6xl mx-auto space-y-6 pb-12">
+      {/* Navigation Header */}
+      <div className="flex items-center justify-between">
+        <Link
+          href="/hub"
+          className="inline-flex items-center space-x-2 text-xs font-black text-[#00b06f] bg-[#232527] px-4 py-2 rounded-xl border border-white/10 hover:border-[#00b06f] transition-all"
+        >
+          <span>⬅️</span>
+          <span>TILLBAKA TILL ROBLOX GAME HUB</span>
+        </Link>
+      </div>
+
       {/* Header Profile Card */}
       <div className="bg-gradient-to-r from-robloxDark via-robloxCard to-robloxNavy border-4 border-robloxBorder rounded-3xl p-6 md:p-8 shadow-roblox-card relative overflow-hidden">
         <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6 relative z-10">

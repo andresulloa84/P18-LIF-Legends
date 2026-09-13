@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { useGame } from '@/context/GameContext';
 
 interface LeaderboardEntry {
@@ -27,7 +28,17 @@ export default function TopplistaPage() {
   ].sort((a, b) => b.stars - a.stars).map((entry, index) => ({ ...entry, rank: index + 1 }));
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="min-h-screen bg-[#191b1d] text-white p-4 md:p-8 max-w-6xl mx-auto space-y-6 pb-12">
+      {/* Navigation Header */}
+      <div className="flex items-center justify-between">
+        <Link
+          href="/hub"
+          className="inline-flex items-center space-x-2 text-xs font-black text-[#00b06f] bg-[#232527] px-4 py-2 rounded-xl border border-white/10 hover:border-[#00b06f] transition-all"
+        >
+          <span>⬅️</span>
+          <span>TILLBAKA TILL ROBLOX GAME HUB</span>
+        </Link>
+      </div>
       {/* Header Banner */}
       <div className="bg-gradient-to-r from-robloxDark via-robloxCard to-robloxNavy border-4 border-robloxBorder rounded-3xl p-6 md:p-8 shadow-roblox-card text-center relative overflow-hidden">
         <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-robloxGold via-yellow-200 to-amber-400 tracking-wider">

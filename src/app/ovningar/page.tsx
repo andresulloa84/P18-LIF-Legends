@@ -55,7 +55,7 @@ export default function OvningarPage() {
   const totalCompletedCount = Object.keys(stats.completedDrills).length;
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="min-h-screen bg-[#191b1d] text-white p-4 md:p-8 max-w-6xl mx-auto space-y-6 pb-12">
       {/* Top Header Navigation */}
       <div className="flex items-center justify-between">
         <Link
