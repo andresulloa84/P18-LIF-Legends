@@ -1,151 +1,73 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useGame } from '@/context/GameContext';
-import { TEKNIKOVNINGAR, TeknikOvning } from '@/data/teknikovningar';
-import TeknikKort from '@/components/TeknikKort';
-import DrillModal from '@/components/DrillModal';
-import RewardModal from '@/components/RewardModal';
+import React from 'react';
+import Link from 'next/link';
 
-export default function HomePage() {
-  const { stats, completeDrill } = useGame();
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [activeDrill, setActiveDrill] = useState<TeknikOvning | null>(null);
-  
-  // Reward modal state
-  const [rewardData, setRewardData] = useState<{
-    isOpen: boolean;
-    stars: number;
-    xp: number;
-    coins: number;
-    leveledUp: boolean;
-    title: string;
-  }>({
-    isOpen: false,
-    stars: 0,
-    xp: 0,
-    coins: 0,
-    leveledUp: false,
-    title: '',
-  });
-
-  const filteredDrills = TEKNIKOVNINGAR.filter((drill) => {
-    if (selectedCategory === 'all') return true;
-    return drill.category === selectedCategory;
-  });
-
-  const handleDrillComplete = (starRating: number) => {
-    if (!activeDrill) return;
-
-    const result = completeDrill(activeDrill.id, starRating);
-    
-    setRewardData({
-      isOpen: true,
-      stars: starRating,
-      xp: result.xpGained,
-      coins: result.coinsGained,
-      leveledUp: result.leveledUp,
-      title: activeDrill.title,
-    });
-
-    setActiveDrill(null);
-  };
-
-  const totalCompletedCount = Object.keys(stats.completedDrills).length;
-
+export default function LandingPage() {
   return (
-    <div className="space-y-6 pb-12">
-      {/* Roblox Game Hero Header Banner */}
-      <div className="bg-gradient-to-r from-robloxDark via-robloxCard to-robloxNavy border-4 border-robloxBorder rounded-3xl p-6 md:p-8 shadow-roblox-card relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-robloxBlue/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div>
-            <div className="inline-flex items-center space-x-2 bg-robloxNavy border-2 border-robloxCyan px-3 py-1 rounded-full text-xs font-black text-robloxCyan mb-2">
-              <span>🎮 TEKNIKARENA</span>
-              <span>•</span>
-              <span>BOLLMÄSTARNA 2026</span>
-            </div>
-            <h1 className="text-3xl md:text-5xl font-black tracking-wider text-white">
-              TEKNIKÖVNINGAR ⚽
+    <div className="relative min-h-screen bg-robloxNavy flex flex-col items-center justify-center p-4 overflow-hidden font-sans">
+      {/* Background Stadium Poster Artwork */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src="/landing-poster.jpg"
+          alt="Lycksele Fotboll Legends Roblox Poster"
+          className="w-full h-full object-cover object-center filter brightness-90 contrast-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-robloxNavy via-black/40 to-black/30" />
+      </div>
+
+      {/* Decorative Glow Overlays */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-robloxBlue/20 rounded-full blur-3xl pointer-events-none" />
+
+      {/* Main Foreground Content */}
+      <div className="relative z-10 max-w-4xl w-full text-center flex flex-col items-center justify-between min-h-[85vh] py-8">
+        
+        {/* Top Header Badge */}
+        <div className="inline-flex items-center space-x-2 bg-black/70 backdrop-blur-md border-3 border-robloxGold px-5 py-2 rounded-full shadow-gold-glow animate-pulse">
+          <span className="text-xl">🏆</span>
+          <span className="font-black text-xs md:text-sm text-robloxGold tracking-widest uppercase">
+            LYCKSELE FOTBOLL LEGENDS • FUTTEY P18
+          </span>
+        </div>
+
+        {/* Center Title Logo Banner */}
+        <div className="my-auto space-y-4">
+          <div className="relative inline-block">
+            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 via-robloxGold to-amber-500 drop-shadow-[0_6px_12px_rgba(0,0,0,0.9)] uppercase">
+              LYCKSELE FOTBOLL
             </h1>
-            <p className="text-sm md:text-base text-slate-300 font-medium max-w-xl mt-1">
-              Träna på fötterna, samla stjärnor och lås upp nya fotbollar i riktig Roblox-stil!
-            </p>
+            <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-b from-cyan-200 via-robloxCyan to-blue-500 drop-shadow-[0_6px_12px_rgba(0,0,0,0.9)] uppercase -mt-2">
+              LEGENDS
+            </h2>
           </div>
 
-          {/* Quick Stats Widget */}
-          <div className="flex items-center space-x-3 bg-black/60 border-3 border-black p-4 rounded-2xl shrink-0 shadow-roblox-btn-sm">
-            <div className="text-center px-3 border-r-2 border-robloxBorder">
-              <span className="text-xs text-slate-400 font-black block">KLARADE</span>
-              <span className="text-xl md:text-2xl font-black text-robloxCyan">
-                {totalCompletedCount} / {TEKNIKOVNINGAR.length}
-              </span>
-            </div>
-            <div className="text-center px-3">
-              <span className="text-xs text-slate-400 font-black block">STJÄRNOR</span>
-              <span className="text-xl md:text-2xl font-black text-robloxGold">
-                {stats.stars} ⭐
-              </span>
-            </div>
+          <div className="bg-black/60 backdrop-blur-sm border-2 border-white/20 px-6 py-2 rounded-2xl inline-block shadow-lg">
+            <span className="text-sm md:text-xl font-black text-white tracking-widest uppercase">
+              JOIN THE ACTION! PLAY NOW!
+            </span>
           </div>
         </div>
+
+        {/* Bottom CTA Button Section */}
+        <div className="w-full max-w-md space-y-4">
+          <Link
+            href="/hub"
+            className="w-full roblox-btn-green py-5 text-2xl md:text-3xl font-black tracking-wider uppercase flex items-center justify-center space-x-3 shadow-roblox-glow group transform hover:scale-105 transition-all"
+          >
+            <span>SPELA NU!</span>
+            <span className="text-3xl group-hover:translate-x-2 transition-transform">⚽</span>
+          </Link>
+
+          <div className="flex justify-center items-center space-x-4 text-xs font-bold text-slate-300 bg-black/60 py-2 px-4 rounded-xl border border-white/10">
+            <span>🎮 Roblox Edition</span>
+            <span>•</span>
+            <span>⭐ Teknikövningar</span>
+            <span>•</span>
+            <span>🏆 P18 Truppen</span>
+          </div>
+        </div>
+
       </div>
-
-      {/* Category Selection Bar */}
-      <div className="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-none">
-        {[
-          { id: 'all', label: 'ALLA ÖVNINGAR ⚡', color: 'bg-robloxCard' },
-          { id: 'brons', label: 'BRONS 🥉', color: 'bg-amber-900/60 border-amber-600' },
-          { id: 'silver', label: 'SILVER 🥈', color: 'bg-slate-800/80 border-slate-400' },
-          { id: 'guld', label: 'GULD 🥇', color: 'bg-amber-500/20 border-robloxGold' },
-          { id: 'legendar', label: 'LEGENDAR 💎', color: 'bg-cyan-950/80 border-robloxCyan' },
-        ].map((cat) => {
-          const isSelected = selectedCategory === cat.id;
-          return (
-            <button
-              key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
-              className={`px-4 py-2.5 rounded-2xl font-black text-xs md:text-sm border-3 border-black whitespace-nowrap transition-all active:translate-y-0.5 ${
-                isSelected
-                  ? 'bg-gradient-to-r from-robloxBlue to-blue-600 text-white shadow-roblox-btn scale-105'
-                  : `${cat.color} text-slate-300 hover:text-white shadow-roblox-btn-sm`
-              }`}
-            >
-              {cat.label}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Teknikkort Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {filteredDrills.map((ovning) => (
-          <TeknikKort
-            key={ovning.id}
-            ovning={ovning}
-            earnedStars={stats.completedDrills[ovning.id] || 0}
-            onSelect={(ovn) => setActiveDrill(ovn)}
-          />
-        ))}
-      </div>
-
-      {/* Drill Execution Modal */}
-      <DrillModal
-        ovning={activeDrill}
-        onClose={() => setActiveDrill(null)}
-        onComplete={handleDrillComplete}
-      />
-
-      {/* Reward & Level Up Modal */}
-      <RewardModal
-        isOpen={rewardData.isOpen}
-        onClose={() => setRewardData((prev) => ({ ...prev, isOpen: false }))}
-        starsAwarded={rewardData.stars}
-        xpGained={rewardData.xp}
-        coinsGained={rewardData.coins}
-        leveledUp={rewardData.leveledUp}
-        drillTitle={rewardData.title}
-      />
     </div>
   );
 }
