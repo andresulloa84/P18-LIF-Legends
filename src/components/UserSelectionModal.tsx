@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useGame } from '@/context/GameContext';
 
@@ -12,7 +12,7 @@ export interface SquadPlayer {
   balls: number;
 }
 
-const SQUAD_PLAYERS: SquadPlayer[] = [
+export const SQUAD_PLAYERS: SquadPlayer[] = [
   { id: 'maxy', name: 'Maxy', username: 'Maxy', avatar: '🎮', balls: 15 },
   { id: 'zlatan', name: 'Zlatan_Roblox', username: 'Zlatan_Roblox', avatar: '🦁', balls: 27 },
   { id: 'teo', name: 'Teo Ahrling', username: 'Teo', avatar: '⚽', balls: 12 },
@@ -26,17 +26,28 @@ const SQUAD_PLAYERS: SquadPlayer[] = [
 interface UserSelectionModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialPlayer?: SquadPlayer | null;
 }
 
-export default function UserSelectionModal({ isOpen, onClose }: UserSelectionModalProps) {
+export default function UserSelectionModal({
+  isOpen,
+  onClose,
+  initialPlayer = null,
+}: UserSelectionModalProps) {
   const router = useRouter();
   const { stats } = useGame();
 
-  const [selectedPlayer, setSelectedPlayer] = useState<SquadPlayer | null>(null);
+  const [selectedPlayer, setSelectedPlayer] = useState<SquadPlayer | null>(initialPlayer);
   const [passwordInput, setPasswordInput] = useState('');
   const [newPasswordInput, setNewPasswordInput] = useState('');
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    if (initialPlayer) {
+      setSelectedPlayer(initialPlayer);
+    }
+  }, [initialPlayer]);
 
   if (!isOpen) return null;
 
@@ -57,15 +68,13 @@ export default function UserSelectionModal({ isOpen, onClose }: UserSelectionMod
 
     if (passwordInput.toUpperCase() === storedPass.toUpperCase()) {
       if (storedPass === 'LIF18' && !isChangingPassword) {
-        // Offer optional password change on first login
         setIsChangingPassword(true);
         setErrorMessage('');
       } else {
-        // Successful login
         if (newPasswordInput.trim()) {
           localStorage.setItem(`pass_${selectedPlayer.id}`, newPasswordInput.trim());
         }
-        alert(`🎮 Välkommen ${selectedPlayer.name}! Du är nu inloggad.`);
+        alert(`🎮 Välkommen ${selectedPlayer.name}! Du loggades in.`);
         onClose();
         router.push('/ovningar');
       }
@@ -97,7 +106,7 @@ export default function UserSelectionModal({ isOpen, onClose }: UserSelectionMod
           </p>
         </div>
 
-        {/* Player Selection Grid */}
+        {/* Player Selection Grid or Password Form */}
         {!selectedPlayer ? (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
             {SQUAD_PLAYERS.map((p) => (
@@ -115,7 +124,6 @@ export default function UserSelectionModal({ isOpen, onClose }: UserSelectionMod
             ))}
           </div>
         ) : (
-          /* Password Form for Selected Player */
           <div className="bg-robloxCard border-3 border-black rounded-2xl p-5 text-center">
             
             <div className="flex items-center justify-center space-x-3 mb-4">
@@ -158,7 +166,6 @@ export default function UserSelectionModal({ isOpen, onClose }: UserSelectionMod
                 </p>
               </div>
 
-              {/* Password Change Option on First Login */}
               {isChangingPassword && (
                 <div className="bg-robloxNavy/80 border-2 border-robloxGold p-3 rounded-xl">
                   <label className="text-xs font-black text-robloxGold block mb-1 uppercase">
@@ -181,7 +188,7 @@ export default function UserSelectionModal({ isOpen, onClose }: UserSelectionMod
                 type="submit"
                 className="w-full roblox-btn-green py-3 text-base font-black uppercase tracking-wider shadow-roblox-glow"
               >
-                {isChangingPassword ? 'SPARA & FORTSÄTT TO GAME! ⚽' : 'LOGGA IN & SPELA! ➔'}
+                {isChangingPassword ? 'SPARA & GÅ TILL ÖVNINGAR! ⚽' : 'LOGGA IN & SPELA! ➔'}
               </button>
             </form>
 

@@ -2,18 +2,28 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import UserSelectionModal from '@/components/UserSelectionModal';
+import UserSelectionModal, { SQUAD_PLAYERS, SquadPlayer } from '@/components/UserSelectionModal';
 
 export default function RobloxGameHubPage() {
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [selectedPlayerForLogin, setSelectedPlayerForLogin] = useState<SquadPlayer | null>(null);
   const [activePlayerName] = useState('Maxy');
+
+  const handlePlayerClick = (player: SquadPlayer) => {
+    setSelectedPlayerForLogin(player);
+    setIsUserModalOpen(true);
+  };
+
+  const handleOpenGeneralModal = () => {
+    setSelectedPlayerForLogin(null);
+    setIsUserModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-[#191b1d] text-white flex flex-col font-sans select-none overflow-x-hidden">
       
-      {/* 1. TOP ROBLOX APP NAV BAR (Matching Image 2) */}
+      {/* 1. TOP ROBLOX APP NAV BAR (Exact replica of attached screenshot) */}
       <header className="bg-[#232527] border-b border-white/10 px-4 py-2.5 flex items-center justify-between z-30">
-        {/* Left: Roblox Logo & Navigation Links */}
         <div className="flex items-center space-x-6">
           <div className="w-7 h-7 bg-white text-black font-black flex items-center justify-center rounded-sm text-sm transform -rotate-12 shadow">
             [ ]
@@ -26,7 +36,6 @@ export default function RobloxGameHubPage() {
           </nav>
         </div>
 
-        {/* Center: Pill Search Bar */}
         <div className="flex-1 max-w-md mx-4">
           <div className="relative">
             <input
@@ -38,7 +47,6 @@ export default function RobloxGameHubPage() {
           </div>
         </div>
 
-        {/* Right: Menu icon, Robux Balance, Settings */}
         <div className="flex items-center space-x-4 text-sm font-bold text-gray-300">
           <button className="hover:text-white">☰</button>
           <div className="flex items-center space-x-1.5 bg-[#191b1d] border border-white/10 px-2.5 py-1 rounded-full text-xs font-black">
@@ -54,7 +62,7 @@ export default function RobloxGameHubPage() {
       {/* 2. MAIN CONTAINER WITH LEFT SIDEBAR AND GAME PAGE CONTENT */}
       <div className="flex-1 flex overflow-hidden">
         
-        {/* Left Sidebar Column (Matching Image 2) */}
+        {/* Left Icon Column Sidebar */}
         <aside className="w-14 bg-[#191b1d] border-r border-white/10 flex flex-col items-center py-4 space-y-6 shrink-0 z-20">
           <Link href="/" title="Home" className="w-9 h-9 rounded-xl bg-[#232527] flex items-center justify-center text-lg hover:bg-[#00b06f]/20 hover:text-[#00b06f] transition-colors">
             🏠
@@ -62,7 +70,7 @@ export default function RobloxGameHubPage() {
           <Link href="/ovningar" title="Games" className="w-9 h-9 rounded-xl bg-[#232527] flex items-center justify-center text-lg hover:bg-[#00b06f]/20 hover:text-[#00b06f] transition-colors">
             🎮
           </Link>
-          <Link href="/profil" title="People / Friends" className="w-9 h-9 rounded-xl bg-[#232527] flex items-center justify-center text-lg hover:bg-[#00b06f]/20 hover:text-[#00b06f] transition-colors">
+          <Link href="/profil" title="Profile" className="w-9 h-9 rounded-xl bg-[#232527] flex items-center justify-center text-lg hover:bg-[#00b06f]/20 hover:text-[#00b06f] transition-colors">
             👤
           </Link>
           <Link href="/topplista" title="Groups" className="w-9 h-9 rounded-xl bg-[#232527] flex items-center justify-center text-lg hover:bg-[#00b06f]/20 hover:text-[#00b06f] transition-colors">
@@ -76,7 +84,7 @@ export default function RobloxGameHubPage() {
           </button>
         </aside>
 
-        {/* Main Content Area (Matching Image 2 Layout) */}
+        {/* Main Content Area (Matching Screenshot Layout) */}
         <main className="flex-1 p-4 md:p-8 overflow-y-auto max-w-6xl mx-auto w-full space-y-6">
           
           {/* Top Hero Section: Game Titles, Social Pills, 16:9 Pitch Banner & SPELA Button */}
@@ -96,20 +104,18 @@ export default function RobloxGameHubPage() {
                 </p>
               </div>
 
-              {/* Avatar Social Row & 55% Green XP Pill (Exact Match to Image 2) */}
+              {/* Avatar Social Row & 55% Green XP Pill */}
               <div className="relative pt-2">
-                {/* Cartoon Stars Decorative Elements */}
                 <div className="absolute -top-4 right-16 pointer-events-none hidden sm:block">
                   <span className="text-3xl animate-bounce">⭐</span>
                   <span className="text-xl ml-1">✨</span>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                  {/* Soccer Ball Avatar Circle with Edit Pencil Icon */}
                   <div className="relative w-12 h-12 rounded-full border-2 border-[#00b06f] bg-[#232527] p-1 shrink-0 flex items-center justify-center shadow-lg">
                     <span className="text-2xl">⚽</span>
                     <button
-                      onClick={() => setIsUserModalOpen(true)}
+                      onClick={handleOpenGeneralModal}
                       title="Byt Spelare"
                       className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#00b06f] text-white flex items-center justify-center text-[10px] border border-[#191b1d]"
                     >
@@ -117,7 +123,6 @@ export default function RobloxGameHubPage() {
                     </button>
                   </div>
 
-                  {/* Social Action Icon Pills */}
                   <div className="flex items-center gap-1.5 bg-[#232527] p-1.5 rounded-2xl border border-white/10">
                     <button className="p-1.5 rounded-xl bg-blue-600/30 text-blue-400 font-black text-xs w-7 h-7 flex items-center justify-center">
                       f
@@ -130,7 +135,6 @@ export default function RobloxGameHubPage() {
                     </button>
                   </div>
 
-                  {/* 55% Green XP Pill Progress Bar */}
                   <div className="flex-1 min-w-[180px] bg-[#232527] border border-white/10 rounded-2xl p-1.5 flex items-center gap-2 shadow-inner">
                     <div className="w-7 h-7 rounded-xl bg-[#00b06f] flex items-center justify-center text-white text-xs font-black shrink-0">
                       ⚽
@@ -150,7 +154,6 @@ export default function RobloxGameHubPage() {
 
             {/* Right Column: 16:9 Pitch Banner & SPELA Button */}
             <div className="lg:col-span-5 flex flex-col items-center">
-              {/* 16:9 Pitch Stadium Banner */}
               <div className="w-full aspect-video relative rounded-2xl overflow-hidden border-2 border-white/10 shadow-xl group">
                 <img
                   src="/roblox-banner.png"
@@ -159,18 +162,15 @@ export default function RobloxGameHubPage() {
                 />
               </div>
 
-              {/* Action Buttons & Tooltip Callout */}
               <div className="w-full mt-3 flex flex-col sm:flex-row items-center gap-3 relative">
-                {/* Massive Green SPELA Button (Matching Image 2) */}
                 <button
-                  onClick={() => setIsUserModalOpen(true)}
+                  onClick={handleOpenGeneralModal}
                   className="w-full sm:flex-1 py-4 px-6 bg-gradient-to-r from-emerald-400 to-[#00b06f] hover:brightness-110 text-white border-3 border-black rounded-2xl flex items-center justify-center gap-2 text-xl font-black tracking-wider uppercase shadow-xl transition-transform active:scale-95"
                 >
                   <span className="text-2xl">▶</span>
                   <span>SPELA</span>
                 </button>
 
-                {/* REDIGERA ÖVNINGAR Button */}
                 <div className="w-full sm:w-auto relative">
                   <Link
                     href="/tranare"
@@ -180,7 +180,6 @@ export default function RobloxGameHubPage() {
                     <span>REDIGERA ÖVNINGAR</span>
                   </Link>
 
-                  {/* Tooltip callout bubble (Exact matching text from Image 2) */}
                   <div className="hidden md:block absolute top-full right-0 mt-2 w-64 bg-[#191b1d]/95 backdrop-blur-md p-3 rounded-xl border border-white/20 text-[11px] text-gray-300 shadow-2xl z-20">
                     <p className="font-bold text-white mb-1">
                       Övningens Instruktioner och Videolänk (t.ex. YouTube/Vimeo)
@@ -198,7 +197,7 @@ export default function RobloxGameHubPage() {
 
           </div>
 
-          {/* 3. THREE-COLUMN BOTTOM INFORMATION & COMMUNITY GRID (Exact Match to Image 2) */}
+          {/* 3. THREE-COLUMN BOTTOM INFORMATION & COMMUNITY GRID */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 pt-4">
             
             {/* Column 1: Information */}
@@ -211,7 +210,6 @@ export default function RobloxGameHubPage() {
                 En ny <strong className="text-white">tränar-kontrollpanel</strong> har lagts till för att redigera övningar och lägga till videolänkar för tyd-tydlighet.
               </p>
 
-              {/* Star Progress Bar Pill (10/50 ⭐) */}
               <div className="pt-2 bg-[#191b1d] p-3 rounded-2xl border border-white/10 flex items-center space-x-3">
                 <span className="text-xl">⭐</span>
                 <div className="flex-1">
@@ -226,57 +224,38 @@ export default function RobloxGameHubPage() {
               </div>
             </div>
 
-            {/* Column 2: Community / Ledderboards (Exact values from Image 2) */}
+            {/* Column 2: Community (Full Squad Players List - Click to Login & Play!) */}
             <div className="bg-[#232527] border border-white/10 rounded-2xl p-5 shadow-lg space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-black text-white">Community</h3>
-                <span className="text-xs font-bold text-gray-400">Ledderboards ⌃</span>
+                <span className="text-[10px] font-black text-[#00b06f] bg-[#00b06f]/20 px-2 py-0.5 rounded border border-[#00b06f]/30">
+                  KLICKA FÖR ATT SPELA
+                </span>
               </div>
+              <p className="text-[11px] text-gray-400">Välj din spelare i listan för att logga in:</p>
 
-              <div className="space-y-2 text-xs font-bold">
-                <div className="flex items-center justify-between bg-[#191b1d] p-2.5 rounded-xl border border-white/5">
-                  <span className="text-white flex items-center gap-2">
-                    <span className="text-gray-400 font-black">1</span>
-                    <span>👑 Vifsgolt</span>
-                  </span>
-                  <span className="text-gray-300 font-black">166</span>
-                </div>
-
-                <div className="flex items-center justify-between bg-[#191b1d] p-2.5 rounded-xl border border-white/5">
-                  <span className="text-white flex items-center gap-2">
-                    <span className="text-gray-400 font-black">2</span>
-                    <span>🏆 Zeroslamme</span>
-                  </span>
-                  <span className="text-gray-300 font-black">54</span>
-                </div>
-
-                <div className="flex items-center justify-between bg-[#191b1d] p-2.5 rounded-xl border border-white/5">
-                  <span className="text-white flex items-center gap-2">
-                    <span className="text-gray-400 font-black">3</span>
-                    <span>🏆 Lordershorn</span>
-                  </span>
-                  <span className="text-gray-300 font-black">30</span>
-                </div>
-
-                <div className="flex items-center justify-between bg-[#191b1d] p-2.5 rounded-xl border border-white/5">
-                  <span className="text-white flex items-center gap-2">
-                    <span className="text-gray-400 font-black">4</span>
-                    <span>🛡️ LyckseleP18</span>
-                  </span>
-                  <span className="text-gray-300 font-black">29</span>
-                </div>
-
-                <div className="flex items-center justify-between bg-[#191b1d] p-2.5 rounded-xl border border-white/5">
-                  <span className="text-white flex items-center gap-2">
-                    <span className="text-gray-400 font-black">5</span>
-                    <span>⚽ Baravenckim</span>
-                  </span>
-                  <span className="text-gray-300 font-black">10</span>
-                </div>
+              <div className="space-y-2 text-xs font-bold max-h-64 overflow-y-auto pr-1">
+                {SQUAD_PLAYERS.map((player, idx) => (
+                  <button
+                    key={player.id}
+                    onClick={() => handlePlayerClick(player)}
+                    className="w-full flex items-center justify-between bg-[#191b1d] p-2.5 rounded-xl border border-white/5 hover:border-[#00b06f] hover:bg-black/60 transition-all text-left group"
+                  >
+                    <span className="text-white flex items-center gap-2 truncate">
+                      <span className="text-gray-400 font-black w-4">{idx + 1}</span>
+                      <span className="text-base">{player.avatar}</span>
+                      <span className="group-hover:text-[#00b06f] transition-colors">{player.name}</span>
+                    </span>
+                    <span className="text-robloxGold font-black text-xs shrink-0 flex items-center space-x-1">
+                      <span>{player.balls} ⚽</span>
+                      <span className="text-gray-400 group-hover:text-white">➔</span>
+                    </span>
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* Column 3: Team statiss (Exact values from Image 2) */}
+            {/* Column 3: Team statiss */}
             <div className="bg-[#232527] border border-white/10 rounded-2xl p-5 shadow-lg space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-black text-white">Team statiss</h3>
@@ -336,7 +315,7 @@ export default function RobloxGameHubPage() {
 
           </div>
 
-          {/* Bottom App Client Footer (Matching Image 2) */}
+          {/* Bottom App Client Footer */}
           <div className="flex items-center justify-between text-xs font-bold text-gray-500 pt-4 border-t border-white/10">
             <div className="flex items-center space-x-6">
               <span>Friome</span>
@@ -355,6 +334,7 @@ export default function RobloxGameHubPage() {
       <UserSelectionModal
         isOpen={isUserModalOpen}
         onClose={() => setIsUserModalOpen(false)}
+        initialPlayer={selectedPlayerForLogin}
       />
     </div>
   );
